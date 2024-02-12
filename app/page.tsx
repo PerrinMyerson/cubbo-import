@@ -232,10 +232,10 @@ export default function Home() {
 							<option value="other">Other</option>
 						</select>
 						<input type="number" placeholder="Quantity" value={itemQuantity} onChange={(e) => setItemQuantity(parseInt(e.target.value))} />
-						<input type="number" placeholder="Unit FOB" value={itemUnitFOB} onChange={(e) => setItemUnitFOB(parseInt(e.target.value))} />
-						<input type="number" placeholder="Volume" value={itemVolume} onChange={(e) => setItemVolume(parseInt(e.target.value))} />
-						<input type="number" placeholder="Weight" value={itemWeight} onChange={(e) => setItemWeight(parseInt(e.target.value))} />
-						<input type="number" placeholder="Insurance %" value={insurancePct} onChange={(e) => setInsurancePct(parseInt(e.target.value))} />
+						<input type="number" placeholder="Unit FOB" value={itemUnitFOB} onChange={(e) => setItemUnitFOB(parseFloat(e.target.value))} />
+						<input type="number" placeholder="Volume" value={itemVolume} onChange={(e) => setItemVolume(parseFloat(e.target.value))} />
+						<input type="number" placeholder="Weight" value={itemWeight} onChange={(e) => setItemWeight(parseFloat(e.target.value))} />
+						<input type="number" placeholder="Insurance %" value={insurancePct} onChange={(e) => setInsurancePct(parseFloat(e.target.value))} />
 						<select value={costAllocation} onChange={(e) => setCostAllocation(e.target.value as CostAllocationEnum)}>
 							<option value="CBM">CBM</option>
 							<option value="Units">Units</option>
