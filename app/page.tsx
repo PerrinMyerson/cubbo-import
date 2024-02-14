@@ -1,108 +1,10 @@
 "use client"
 
-import Image from "next/image";
+import { CostAllocationEnum, ItemInput, ItemType, makeFullItemListings } from "@/utils/processItems";
 import { useState } from "react";
 
-type ItemType = "other";
-
-type CostAllocationEnum = "CBM" | "Units" | "Weight";
-
-type Item = {
-	name: string,
-	type: ItemType,
-	quantity: number,
-	fobPrice: number,
-	volume: number, // in cubic cm
-	weight: number, // in kg
-	costAllocation: CostAllocationEnum,
-	insurancePct: number,
-};
-
-const unitCBM = (item: Item): number => {
-	return item.volume / 1000000;
-}
-
-const calcCBM = (item: Item): number => {
-	return item.volume * item.quantity / 1000000;
-}
-
-const calcWeightKg = (item: Item): number => {
-	return item.weight * item.quantity;
-}
-
-const calcCost = (item: Item): number => {
-	return item.fobPrice * item.quantity;
-}
-
-const pctShipmentValue = (item: Item, totalCost: number): number => {
-	return calcCost(item) / totalCost;
-}
-
-const pivotFreightCalculation = (costAllocation: CostAllocationEnum, item: Item): number => {
-	switch (costAllocation) {
-		case "CBM":
-			return calcCBM(item);
-		case "Units":
-			return item.quantity;
-		case "Weight":
-			return calcWeightKg(item);
-	}
-}
-
-const pivotForUnitEconomics = (costAllocation: CostAllocationEnum, item: Item): number => {
-	switch (costAllocation) {
-		case "CBM":
-			return unitCBM(item);
-		case "Units":
-			return 1;
-		case "Weight":
-			return item.weight;
-	}
-}
-
-type ItemListingType1 = Item & {
-	cbm: number,
-	weightKg: number,
-	cost: number,
-	pivotFreightEconomics: number,
-	pivotForUnitEconomics: number,
-};
-
-const makeItemListing1 = (item: Item): ItemListingType1 => {
-	return {
-		...item,
-		cbm: calcCBM(item),
-		weightKg: calcWeightKg(item),
-		cost: calcCost(item),
-		pivotFreightEconomics: pivotFreightCalculation(item.costAllocation, item),
-		pivotForUnitEconomics: pivotForUnitEconomics(item.costAllocation, item),
-	};
-}
-
-const freightPerUnit = (costAllocation: CostAllocationEnum, item: Item, totalShipment: number, totalPivotFreightCalculation: number): number => {
-	return totalShipment * (pivotForUnitEconomics(costAllocation, item) / totalPivotFreightCalculation);
-}
-
-// visible to user
-const cifPrice = (item: ItemListingType1, totalShipment: number, totalPivotFreightCalculation: number): number => {
-	return item.fobPrice + freightPerUnit(item.costAllocation, item, totalShipment, totalPivotFreightCalculation) + (item.fobPrice * item.insurancePct);
-}
-
-type ItemListingType2 = ItemListingType1 & {
-	// freightPerUnit: number,
-	cifPrice: number,
-};
-
-const makeItemListing2 = (item: ItemListingType1, totalShipment: number, totalPivotFreightCalculation: number) => {
-	return {
-		...item,
-		// freightPerUnit: freightPerUnit(item.costAllocation, item, totalShipment, totalPivotFreightCalculation),
-		cifPrice: cifPrice(item, totalShipment, totalPivotFreightCalculation),
-	};
-}
-
 export default function Home() {
-	const [items, setItems] = useState<Item[]>([]);
+	const [items, setItems] = useState<ItemInput[]>([]);
 	const [itemName, setItemName] = useState<string>("");
 	const [itemType, setItemType] = useState<ItemType>("other");
 	const [itemQuantity, setItemQuantity] = useState<number>();
@@ -111,6 +13,9 @@ export default function Home() {
 	const [itemWeight, setItemWeight] = useState<number>();
 	const [costAllocation, setCostAllocation] = useState<CostAllocationEnum>("CBM");
 	const [insurancePct, setInsurancePct] = useState<number>(0.7);
+
+	const [totalFreight, setTotalFreight] = useState<number>(0);
+	const [totalCustoms, setTotalCustoms] = useState<number>(0);
 
 	const resetForm = () => {
 		setItemName("");
@@ -123,15 +28,8 @@ export default function Home() {
 		setInsurancePct(0.7);
 	}
 
-	const [totalFreight, setTotalFreight] = useState<number>(0);
-	const [totalCustoms, setTotalCustoms] = useState<number>(0);
-	
-	const itemListings1 = items.map(makeItemListing1);
-	
-	const totalShipmentValue = totalFreight + totalCustoms;
-	const totalPivotFreightCalculation = itemListings1.reduce((acc, item) => acc + item.pivotFreightEconomics, 0);
-
-	const itemListings2 = itemListings1.map(item => makeItemListing2(item, totalShipmentValue, totalPivotFreightCalculation));
+	const totalShipmentValue = totalCustoms + totalFreight;
+	const { items: itemListings, totalPivotSum: totalPivotFreightCalculation } = makeFullItemListings(items, totalShipmentValue);
 
 	return (
 		<main className="w-screen h-screen bg-white">
@@ -142,7 +40,7 @@ export default function Home() {
 				</span>
 				<div className="p-2"></div>
 				<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
-					{"$" + (100.1111).toFixed(2)}
+					{"$" + "Test"}
 				</div>
 				<div className="p-5"></div>
 				<div className="flex flex-row">
@@ -175,7 +73,7 @@ export default function Home() {
 				<div className="p-5"></div>
 				{/* list all items */}
 				{
-					itemListings2.map((item, index) => (
+					itemListings.map((item, index) => (
 						<div key={index} className="flex flex-row">
 							<div className="flex flex-col">
 								<div className="flex flex-row">
