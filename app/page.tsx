@@ -1,7 +1,7 @@
 "use client"
 
-import { CostAllocationEnum, ItemInput, ItemType, makeFullItemListings } from "@/utils/processItems";
-import { useState } from "react";
+import { CostAllocationEnum, IndustryEnum, ItemInput, ItemListingOutput, ItemType, TransportEnum, makeFullItemListings } from "@/utils/processItems";
+import { useEffect, useState } from "react";
 
 export default function Home() {
 	const [items, setItems] = useState<ItemInput[]>([]);
@@ -12,24 +12,41 @@ export default function Home() {
 	const [itemVolume, setItemVolume] = useState<number>();
 	const [itemWeight, setItemWeight] = useState<number>();
 	const [costAllocation, setCostAllocation] = useState<CostAllocationEnum>("CBM");
+	const [industry, setIndustry] = useState<IndustryEnum>("Clothes");
 	const [insurancePct, setInsurancePct] = useState<number>(0.7);
 
 	const [totalFreight, setTotalFreight] = useState<number>(0);
 	const [totalCustoms, setTotalCustoms] = useState<number>(0);
+	const [transportType, setTransportType] = useState<TransportEnum>("unknown");
+
+	// calculated values
+	const totalShipmentValue = totalCustoms + totalFreight;
+	const [itemListings, setItemListings] = useState<ItemListingOutput[]>([]);
+	const [totalPivotFreightCalculation, setTotalPivotFreightCalculation] = useState<number>(0);
+	const [totalCost, setTotalCost] = useState<number>(0);
 
 	const resetForm = () => {
-		setItemName("");
-		setItemType("other");
-		setItemQuantity(0);
-		setItemUnitFOB(0);
-		setItemVolume(0);
-		setItemWeight(0);
-		setCostAllocation("CBM");
-		setInsurancePct(0.7);
+		// setItemName("");
+		// setItemType("other");
+		// setItemQuantity(0);
+		// setItemUnitFOB(0);
+		// setItemVolume(0);
+		// setItemWeight(0);
+		// setCostAllocation("CBM");
+		// setInsurancePct(0.7);
 	}
 
-	const totalShipmentValue = totalCustoms + totalFreight;
-	const { items: itemListings, totalPivotSum: totalPivotFreightCalculation } = makeFullItemListings(items, totalShipmentValue);
+	useEffect(() => {
+		const {
+			items: itemListingsOutput, 
+			totalPivotSum: totalPivotFreightCalculationOutput
+		} = makeFullItemListings(items, totalShipmentValue);
+		setItemListings(itemListingsOutput);
+		console.log(itemListingsOutput);
+		console.log(totalPivotFreightCalculationOutput);
+		setTotalPivotFreightCalculation(totalPivotFreightCalculationOutput);
+		setTotalCost(itemListingsOutput.reduce((acc, item) => acc + item.cifPrice, 0));
+	}, [items, totalShipmentValue]);
 
 	return (
 		<main className="w-screen h-screen bg-white">
@@ -40,7 +57,7 @@ export default function Home() {
 				</span>
 				<div className="p-2"></div>
 				<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
-					{"$" + "Test"}
+					{"$" + totalCost.toFixed(2)}
 				</div>
 				<div className="p-5"></div>
 				<div className="flex flex-row">
@@ -75,46 +92,53 @@ export default function Home() {
 				{
 					itemListings.map((item, index) => (
 						<div key={index} className="flex flex-row">
-							<div className="flex flex-col">
-								<div className="flex flex-row">
+							<div className="flex flex-row">
+								<div className="flex flex-col px-2 border-r-2">
 									<span>Name:</span>
-									<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
+									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
+									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.name}
 									</div>
 								</div>
-								<div className="flex flex-row">
+								<div className="flex flex-col px-2 border-r-2">
 									<span>Quantity:</span>
-									<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
+									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
+									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.quantity}
 									</div>
 								</div>
-								<div className="flex flex-row">
+								<div className="flex flex-col px-2 border-r-2">
 									<span>FOB Price:</span>
-									<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
+									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
+									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{"$" + item.fobPrice.toFixed(2)}
 									</div>
 								</div>
-								<div className="flex flex-row">
+								<div className="flex flex-col px-2 border-r-2">
 									<span>Volume:</span>
-									<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
+									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
+									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.volume}
 									</div>
 								</div>
-								<div className="flex flex-row">
+								<div className="flex flex-col px-2 border-r-2">
 									<span>Weight:</span>
-									<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
+									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
+									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.weight}
 									</div>
 								</div>
-								<div className="flex flex-row">
+								<div className="flex flex-col px-2 border-r-2">
 									<span>Cost Allocation:</span>
-									<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
+									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
+									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.costAllocation}
 									</div>
 								</div>
-								<div className="flex flex-row">
+								<div className="flex flex-col px-2 border-r-2">
 									<span>Insurance %:</span>
-									<div className="rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex flex-row-reverse">
+									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
+									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.insurancePct}
 									</div>
 								</div>
@@ -123,8 +147,8 @@ export default function Home() {
 						</div>
 					))
 				}
-				<form className="flex flex-col w-full p-5">
-					<div className="flex flex-row">
+				<div className="flex flex-col w-60 p-5">
+					<div className="flex flex-col">
 						<input type="text" placeholder="Item Name" value={itemName} onChange={(e) => setItemName(e.target.value)} />
 						<select value={itemType} onChange={(e) => setItemType(e.target.value as ItemType)}>
 							<option value="other">Other</option>
@@ -156,7 +180,7 @@ export default function Home() {
 							resetForm();
 						}}>Add</button>
 					</div>
-				</form>
+				</div>
 			</div>
 		</main>
 	);

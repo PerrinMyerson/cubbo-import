@@ -1,8 +1,22 @@
-"use server"
-
 export type ItemType = "other";
-
 export type CostAllocationEnum = "CBM" | "Units" | "Weight";
+export type IndustryEnum = 
+	"Cosmetics"
+	| "Dermocosmetic"
+	| "MechanicalToys"
+	| "Perfumes"
+	| "Sunglasses"
+	| "Young-Children-Toys"
+	| "Food-supplements"
+	| "Vitamins"
+	| "Sports-supplements"
+	| "Sex-toys"
+	| "Electronic-Sex-toys"
+	| "Electronic-Toys"
+	| "electronics"
+	| "Clothes";
+
+export type TransportEnum = "unknown";
 
 export type ItemInput = {
 	name: string,
@@ -100,7 +114,9 @@ export type ItemListingOutput = ItemListingType1 & {
 
 export const makeFullItemListings = (items: ItemInput[], totalShipment: number) => {
 	const itemListings1 = items.map(makeItemListing1);
+	console.log(itemListings1);
 	const totalPivotFreightCalculation = itemListings1.reduce((acc, item) => acc + item.pivotFreightEconomics, 0);
+	console.log(totalPivotFreightCalculation);
 	return ({
 		items: itemListings1.map(item => makeItemListing2(item, totalShipment, totalPivotFreightCalculation)),
 		totalPivotSum: totalPivotFreightCalculation,
