@@ -49,7 +49,7 @@ export default function Home() {
 	}, [items, totalShipmentValue]);
 
 	return (
-		<main className="w-screen h-screen bg-white">
+		<main className="w-screen min-h-screen bg-white">
 			<div className="p-5"></div>
 			<div className="flex flex-col w-full place-items-center">
 				<span className="text-3xl">
@@ -88,62 +88,86 @@ export default function Home() {
 					</div>
 				</div>
 				<div className="p-5"></div>
+				{/* list all titles */}
+				<div className="flex flex-row">
+					<div className="flex flex-col px-2 border-r-2">
+						<span className="w-[100px]">Name:</span>
+					</div>
+					<div className="flex flex-col px-2 border-r-2">
+						<span className="w-[100px]">Quantity:</span>
+					</div>
+					<div className="flex flex-col px-2 border-r-2">
+						<span className="w-[100px]">FOB Price:</span>
+					</div>
+					<div className="flex flex-col px-2 border-r-2">
+						<span className="w-[100px]">Volume:</span>
+					</div>
+					<div className="flex flex-col px-2 border-r-2">
+						<span className="w-[100px]">Weight:</span>
+					</div>
+					<div className="flex flex-col px-2 border-r-2">
+						<span className="w-[100px]">Cost Allocation:</span>
+					</div>
+					<div className="flex flex-col px-2 border-r-2">
+						<span className="w-[100px]">Insurance %:</span>
+					</div>
+				</div>
+
 				{/* list all items */}
 				{
 					itemListings.map((item, index) => (
 						<div key={index} className="flex flex-row">
 							<div className="flex flex-row">
 								<div className="flex flex-col px-2 border-r-2">
-									<span>Name:</span>
+									{/* <span>Name:</span> */}
 									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
 									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.name}
 									</div>
 								</div>
 								<div className="flex flex-col px-2 border-r-2">
-									<span>Quantity:</span>
+									{/* <span>Quantity:</span> */}
 									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
 									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.quantity}
 									</div>
 								</div>
 								<div className="flex flex-col px-2 border-r-2">
-									<span>FOB Price:</span>
+									{/* <span>FOB Price:</span> */}
 									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
 									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{"$" + item.fobPrice.toFixed(2)}
 									</div>
 								</div>
 								<div className="flex flex-col px-2 border-r-2">
-									<span>Volume:</span>
+									{/* <span>Volume:</span> */}
 									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
 									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.volume}
 									</div>
 								</div>
 								<div className="flex flex-col px-2 border-r-2">
-									<span>Weight:</span>
+									{/* <span>Weight:</span> */}
 									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
 									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.weight}
 									</div>
 								</div>
 								<div className="flex flex-col px-2 border-r-2">
-									<span>Cost Allocation:</span>
+									{/* <span>Cost Allocation:</span> */}
 									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
 									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.costAllocation}
 									</div>
 								</div>
 								<div className="flex flex-col px-2 border-r-2">
-									<span>Insurance %:</span>
+									{/* <span>Insurance %:</span> */}
 									{/* <div className="rounded-xl border-2 w-[100px] text-2xl p-2 px-4 flex flex-row-reverse"> */}
 									<div className="w-[100px] text-xl flex flex-row-reverse">
 										{item.insurancePct}
 									</div>
 								</div>
 							</div>
-							<div className="p-5"></div>
 						</div>
 					))
 				}
@@ -182,6 +206,7 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
+			<div className="p-20"></div>
 		</main>
 	);
 }
