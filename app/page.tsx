@@ -1,6 +1,6 @@
 "use client"
 
-import { CostAllocationEnum, IndustryEnum, ItemInput, ItemType, TransportEnum } from "@/utils/processItems";
+import { CostAllocationEnum, IndustryEnum, ItemInput, ItemListingOutput, ItemType, TransportEnum } from "@/utils/processItems";
 import { useEffect, useState } from "react";
 
 export default function Home() {

@@ -25,6 +25,16 @@ export type ItemInput = {
 	industry: IndustryEnum, // Make industry mandatory
 	hsCode?: string, // HS code is optional
 };
+
+export interface ItemListingOutput {
+    name: string;
+    quantity: number;
+    fobPrice: number;
+    industry: string;
+    hsCode?: string;
+    totalItemCost?: number;
+    estimatedCostWithTax?: string;
+}
 /*
 const unitCBM = (item: ItemInput): number => {
 	return item.volume / 1000000;
