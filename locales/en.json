@@ -1,0 +1,19 @@
+{
+    "pageTitle": "Cubbo Import Tax Calculator",
+    "totalCost": "Total Cost",
+    "addItem": "Add",
+    "itemPlaceholder": {
+      "name": "Item Name",
+      "quantity": "Quantity",
+      "unitFOB": "Unit FOB",
+      "volume": "Volume",
+      "weight": "Weight",
+      "insurancePercent": "Insurance %",
+      "selectIndustry": "Select Industry",
+      "hsCodeOptional": "HS Code (optional)"
+    },
+    "currency": {
+      "USD": "USD",
+      "MXN": "MXN"
+    }
+  }

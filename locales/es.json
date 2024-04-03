@@ -1,0 +1,20 @@
+{
+    "pageTitle": "Calculadora de Impuestos de Importación Cubbo",
+    "totalCost": "Costo Total",
+    "addItem": "Agregar",
+    "itemPlaceholder": {
+      "name": "Nombre del Artículo",
+      "quantity": "Cantidad",
+      "unitFOB": "Unidad FOB",
+      "volume": "Volumen",
+      "weight": "Peso",
+      "insurancePercent": "% de Seguro",
+      "selectIndustry": "Seleccionar Industria",
+      "hsCodeOptional": "Código HS (opcional)"
+    },
+    "currency": {
+      "USD": "USD",
+      "MXN": "MXN"
+    }
+}
+  

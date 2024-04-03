@@ -13,22 +13,19 @@ export type IndustryEnum =
 	| "Sex-toys"
 	| "Electronic-Sex-toys"
 	| "Electronic-Toys"
-	| "electronics"
+	| "Electronics"
 	| "Clothes";
 
 export type TransportEnum = "unknown";
 
 export type ItemInput = {
 	name: string,
-	type: ItemType,
 	quantity: number,
 	fobPrice: number,
-	volume: number, // in cubic cm
-	weight: number, // in kg
-	costAllocation: CostAllocationEnum,
-	insurancePct: number,
+	industry: IndustryEnum, // Make industry mandatory
+	hsCode?: string, // HS code is optional
 };
-
+/*
 const unitCBM = (item: ItemInput): number => {
 	return item.volume / 1000000;
 }
@@ -122,3 +119,4 @@ export const makeFullItemListings = (items: ItemInput[], totalShipment: number) 
 		totalPivotSum: totalPivotFreightCalculation,
 	});
 }
+*/
