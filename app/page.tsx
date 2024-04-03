@@ -8,7 +8,7 @@ export default function Home() {
 	const [itemName, setItemName] = useState<string>("");
 	const [itemQuantity, setItemQuantity] = useState<number>();
 	const [itemUnitFOB, setItemUnitFOB] = useState<number>();
-	const [industry, setIndustry] = useState<IndustryEnum>("");
+	const [industry, setIndustry] = useState<IndustryEnum | null>(null);
 
 
 	// calculated values
@@ -85,8 +85,8 @@ export default function Home() {
 			const { min, max } = taxRates[item.industry] || { min: 0, max: 0 };
 			const minTaxCost = totalItemCost * (min / 100);
 			const maxTaxCost = totalItemCost * (max / 100);
-			totalMinTaxed +=  minTaxCost;
-			totalMaxTaxed +=  maxTaxCost;
+			totalMinTaxed += minTaxCost;
+			totalMaxTaxed += maxTaxCost;
 
 			return {
 				...item,
@@ -169,7 +169,11 @@ export default function Home() {
 						<input type="number" placeholder="Unit FOB" value={itemUnitFOB} onChange={(e) => setItemUnitFOB(parseFloat(e.target.value))} style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }} />
 
 
-						<select value={industry} onChange={(e) => setIndustry(e.target.value as IndustryEnum)} style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}>
+						<select
+							value={industry ?? ""}
+							onChange={(e) => setIndustry(e.target.value === "" ? null : e.target.value as IndustryEnum)}
+							style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
+						>
 							<option value="" disabled>Select industry</option>
 							{INDUSTRY_OPTIONS.map((industryOption) => (
 								<option key={industryOption} value={industryOption}>
