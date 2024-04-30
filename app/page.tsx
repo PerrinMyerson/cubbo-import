@@ -1,10 +1,12 @@
 "use client"
 
 import { CostAllocationEnum, IndustryEnum, ItemInput, ItemListingOutput, ItemType, TransportEnum } from "@/utils/processItems";
+import emailjs from 'emailjs-com';
 import { useEffect, useState } from "react";
 
 export default function Home() {
 	const [items, setItems] = useState<ItemInput[]>([]);
+	const [email, setEmail] = useState('');
 	const [itemName, setItemName] = useState<string>("");
 	const [itemQuantity, setItemQuantity] = useState<number>();
 	const [itemUnitFOB, setItemUnitFOB] = useState<number>();
@@ -68,6 +70,32 @@ export default function Home() {
 		Clothes: { min: 5, max: 25 },
 	};
 
+
+	const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+	const sendEmail = () => {
+		const table = itemListings.map((item, index) =>
+			`Name: ${item.name}, Quantity: ${item.quantity}, FOB Price: $${item.fobPrice.toFixed(2)}, Total Cost: $${(item.fobPrice * item.quantity).toFixed(2)},Estimated Tax: ${item.estimatedCostWithTax}`
+		).join('\n');
+
+		const templateParams = {
+			email,
+			total_cost: `$${totalCost.toFixed(2)}`,
+			tax_range: totalCostWithTaxRange,
+			table,
+		};
+
+		emailjs.send('service_4e36gr8', 'template_cvwnb7s', templateParams, 'X7PlEZQgKqxgfC7Wa')
+			.then(response => {
+				console.log('Model delivered!', response);
+				alert('Model delivered!');
+			}, error => {
+				console.error('Error in delivering model: ', error);
+				alert('Error in delivering model. Please try again.');
+			});
+	};
+
+
 	const removeItem = (indexToRemove: number) => {
 		const newItems = items.filter((_, index) => index !== indexToRemove);
 		setItems(newItems);
@@ -91,12 +119,14 @@ export default function Home() {
 			return {
 				...item,
 				totalItemCost,
-				estimatedCostWithTax: `$${(minTaxCost).toFixed(2)}-$${(maxTaxCost).toFixed(2)}`,
+				estimatedCostWithTax: `$${Number(minTaxCost.toFixed(2)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}-$${Number(maxTaxCost.toFixed(2)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+
 			};
 		});
 
 		setTotalCost(total);
-		setTotalCostWithTaxRange(`$${totalMinTaxed.toFixed(2)}-$${totalMaxTaxed.toFixed(2)}`);
+		setTotalCostWithTaxRange(`$${Number(totalMinTaxed.toFixed(2)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}-$${Number(totalMaxTaxed.toFixed(2)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+		);
 		setItemListings(updatedItemListings);
 	}, [items]);
 
@@ -105,6 +135,7 @@ export default function Home() {
 
 			<h1 className="text-center text-4xl font-bold font-jakarta text-custom-blue p-5">Cubbo Import Tax Calculator</h1>
 			<div className="p-5"></div>
+
 			<div className="flex flex-col w-full place-items-center">
 				<div className="flex items-start justify-center space-x-6">
 					{/* Total Cost Box */}
@@ -113,7 +144,7 @@ export default function Home() {
 							Cost of Goods:
 						</span>
 						<div className="mt-2 rounded-xl border-2 w-[300px] text-2xl p-2 px-4 flex justify-end">
-							{"$" + totalCost.toFixed(2)}
+						{"$" + totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 						</div>
 					</div>
 
@@ -128,7 +159,18 @@ export default function Home() {
 					</div>
 				</div>
 				<div className="p-5"></div>
-
+				<div className="text-center my-4">
+					<iframe
+						width="560"
+						height="315"
+						src="https://www.youtube.com/embed/HNJnmQ198iM"
+						title="YouTube video player"
+						frameBorder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+						referrerPolicy="strict-origin-when-cross-origin"
+						allowFullScreen
+					></iframe>
+				</div>
 
 				<div className="p-5"></div>
 				<div className="flex flex-row mt-5 border-b-2 pb-2">
@@ -136,7 +178,7 @@ export default function Home() {
 					<div className="px-2 w-[100px] font-bold font-jakarta border-r">Quantity</div>
 					<div className="px-2 w-[100px] font-bold font-jakarta border-r">FOB Price</div>
 					<div className="px-2 w-[200px] font-bold font-jakarta border-r">Industry</div>
-					<div className="px-2 w-[100px] font-bold font-jakarta border-r">HS Code</div>
+					{/*<div className="px-2 w-[100px] font-bold font-jakarta border-r">HS Code</div>*/}
 					<div className="px-2 w-[200px] font-bold font-jakarta border-r">Total Item Cost</div>
 					<div className="px-2 w-[300px] font-bold font-jakarta border-r">Item Tax Range</div>
 					<div className="px-2 w-[100px] font-bold font-jakarta">Actions</div> {/* Actions like Remove button */}
@@ -149,7 +191,7 @@ export default function Home() {
 						<div className="px-2 w-[100px] text-xl border-r">{item.quantity}</div>
 						<div className="px-2 w-[100px] text-xl border-r">{"$" + item.fobPrice.toFixed(2)}</div>
 						<div className="px-2 w-[200px] text-xl border-r">{item.industry}</div>
-						<div className="px-2 w-[100px] text-xl border-r">{item.hsCode || 'N/A'}</div>
+						{/*<div className="px-2 w-[100px] text-xl border-r">{item.hsCode || 'N/A'}</div>*/}
 						<div className="px-2 w-[200px] text-xl border-r">{"$" + (item.fobPrice * item.quantity).toFixed(2)}</div>
 						<div className="px-2 w-[300px] text-xl border-r">{item.estimatedCostWithTax}</div>
 						<div className="px-2 w-[100px]">
@@ -181,7 +223,7 @@ export default function Home() {
 								</option>
 							))}
 						</select>
-						<input type="text" placeholder="HS Code (optional)" value={hsCode} onChange={(e) => setHsCode(e.target.value)} style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }} />
+						{/*<input type="text" placeholder="HS Code (optional)" value={hsCode} onChange={(e) => setHsCode(e.target.value)} style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }} />*/}
 						<button onClick={() => {
 							if (!itemName || !itemQuantity || !itemUnitFOB || !industry) { // Ensuring all required fields are filled
 								alert("Please fill in all required fields.");
@@ -192,13 +234,36 @@ export default function Home() {
 								quantity: itemQuantity,
 								fobPrice: itemUnitFOB,
 								industry: industry,
-								hsCode: hsCode,
 							};
 							setItems([...items, newItem]);
 							setItemListings([...itemListings, newItem]); // Assuming itemListings is the correct state to update for display
 							resetForm();
 						}}>Add</button>
 					</div>
+				</div>
+
+				<div>
+					<input
+						type="email"
+						placeholder="Enter your email"
+						value={email}
+						onChange={(e) => setEmail(e.target.value)}
+						style={{ margin: '10px', padding: '5px' }}
+					/>
+					<button
+						onClick={sendEmail}
+						disabled={!isValidEmail(email)} // Button is disabled if email is not valid
+						style={{
+							padding: '10px 20px',
+							cursor: !isValidEmail(email) ? 'not-allowed' : 'pointer', // 'not-allowed' cursor if disabled
+							backgroundColor: isValidEmail(email) ? '#007bff' : '#ccc', // Grey out if email is invalid
+							color: 'white',
+							border: 'none',
+							borderRadius: '4px'
+						}}
+					>
+						Send Model for Finalization
+					</button>
 				</div>
 			</div>
 			<div className="p-20"></div>

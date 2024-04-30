@@ -19,11 +19,12 @@ export type IndustryEnum =
 export type TransportEnum = "unknown";
 
 export type ItemInput = {
+	estimatedCostWithTax: any;
 	name: string,
 	quantity: number,
 	fobPrice: number,
 	industry: IndustryEnum, // Make industry mandatory
-	hsCode?: string, // HS code is optional
+	
 };
 
 export interface ItemListingOutput {
@@ -31,7 +32,6 @@ export interface ItemListingOutput {
     quantity: number;
     fobPrice: number;
     industry: string;
-    hsCode?: string;
     totalItemCost?: number;
     estimatedCostWithTax?: string;
 }
