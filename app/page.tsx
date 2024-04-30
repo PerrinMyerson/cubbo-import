@@ -234,6 +234,7 @@ export default function Home() {
 								quantity: itemQuantity,
 								fobPrice: itemUnitFOB,
 								industry: industry,
+								
 							};
 							setItems([...items, newItem]);
 							setItemListings([...itemListings, newItem]); // Assuming itemListings is the correct state to update for display

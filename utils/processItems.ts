@@ -19,7 +19,6 @@ export type IndustryEnum =
 export type TransportEnum = "unknown";
 
 export type ItemInput = {
-	estimatedCostWithTax: any;
 	name: string,
 	quantity: number,
 	fobPrice: number,
