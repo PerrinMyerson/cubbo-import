@@ -9,7 +9,7 @@ export default function Home() {
 	const [email, setEmail] = useState('');
 	const [itemName, setItemName] = useState<string>("");
 	const [itemQuantity, setItemQuantity] = useState<number>();
-	const [itemUnitFOB, setItemUnitFOB] = useState<number>();
+	const [itemUnitFOB, setItemUnitFOB] = useState<number>() ;
 	const [industry, setIndustry] = useState<IndustryEnum | null>(null);
 
 	// calculated values
@@ -21,8 +21,11 @@ export default function Home() {
 	const [hsCode, setHsCode] = useState<string>("");
 
 	const resetForm = () => {
-		// Reset form logic here if needed
-	}
+		setItemName('');
+		setItemQuantity(undefined);
+		setItemUnitFOB(undefined);
+		setIndustry(null);
+	};
 
 	const INDUSTRY_OPTIONS: IndustryEnum[] = [
 		"Cosmetics",
@@ -184,10 +187,17 @@ export default function Home() {
 				</div>
 
 				<div className="flex flex-col w-full max-w-xs p-5 mt-5 bg-white bg-opacity-40 rounded-2xl">
-					<input type="text" placeholder="Item Name" value={itemName} onChange={(e) => setItemName(e.target.value)} className="p-2 mb-2 border rounded bg-transparent" />
-					<input type="number" placeholder="Quantity" value={itemQuantity} onChange={(e) => setItemQuantity(parseInt(e.target.value))} className="p-2 mb-2 border rounded bg-transparent" />
-					<input type="number" placeholder="Unit FOB" value={itemUnitFOB} onChange={(e) => setItemUnitFOB(parseFloat(e.target.value))} className="p-2 mb-2 border rounded bg-transparent" />
-					<select value={industry ?? ""} onChange={(e) => setIndustry(e.target.value === "" ? null : e.target.value as IndustryEnum)} className="p-2 mb-2 border rounded bg-transparent">
+				<label htmlFor="itemName" className="sr-only">Item Name</label>
+					<input type="text" id="itemName" placeholder="Item Name" value={itemName} onChange={(e) => setItemName(e.target.value)} className="p-2 mb-2 border rounded bg-transparent" />
+					
+					<label htmlFor="itemQuantity" className={`p-2 mb-2 border rounded bg-transparent ${itemQuantity === null ? 'block' : 'sr-only'}`}>Quantity</label>
+					<input type="number" id="itemQuantity" placeholder="Quantity" value={itemQuantity ?? ''} onChange={(e) => setItemQuantity(parseInt(e.target.value))} className="p-2 mb-2 border rounded bg-transparent" />
+					
+					<label htmlFor="itemUnitFOB" className={`p-2 mb-2 border rounded bg-transparent ${itemUnitFOB === null ? 'block' : 'sr-only'}`}>Unit FOB</label>
+					<input type="number" id="itemUnitFOB" placeholder="Unit FOB" value={itemUnitFOB ?? ''} onChange={(e) => setItemUnitFOB(parseFloat(e.target.value))} className="p-2 mb-2 border rounded bg-transparent" />
+					
+					<label htmlFor="industry" className="sr-only">Industry</label>
+					<select id="industry" value={industry ?? ""} onChange={(e) => setIndustry(e.target.value === "" ? null : e.target.value as IndustryEnum)} className="p-2 mb-2 border rounded bg-transparent">
 						<option value="" disabled>Select industry</option>
 						{INDUSTRY_OPTIONS.map((industryOption) => (
 							<option key={industryOption} value={industryOption}>
@@ -195,6 +205,7 @@ export default function Home() {
 							</option>
 						))}
 					</select>
+					
 					<button onClick={() => {
 						if (!itemName || !itemQuantity || !itemUnitFOB || !industry) {
 							alert("Please fill in all required fields.");
@@ -208,13 +219,15 @@ export default function Home() {
 						};
 						setItems([...items, newItem]);
 						setItemListings([...itemListings, newItem]);
-						resetForm();
+						resetForm(); // Clear input fields after submission
 					}} className="p-2 mt-2 text-white bg-blue-500 rounded">Add</button>
 				</div>
 
 				<div className="flex flex-col items-center w-full mt-5">
+					<label htmlFor="email" className="sr-only">Enter your email</label>
 					<input
 						type="email"
+						id="email"
 						placeholder="Enter your email"
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
